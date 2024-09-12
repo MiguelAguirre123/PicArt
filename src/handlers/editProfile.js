@@ -1,4 +1,4 @@
-const { updateUserProfile } = require('../utils/dynamoUtils');
+const { updateUserProfile } = require('../utils/cognitoUtils');
 
 exports.handler = async (event) => {
     try {

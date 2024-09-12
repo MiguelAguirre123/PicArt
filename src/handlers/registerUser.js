@@ -1,4 +1,4 @@
-const { registerUser } = require('../utils/dynamoUtils');
+const { registerUser } = require('../utils/cognitoUtils'); // Asegúrate de tener el archivo cognitoUtils.js con las funciones necesarias
 
 exports.handler = async (event) => {
     try {
@@ -14,18 +14,25 @@ exports.handler = async (event) => {
         }
 
         // Verificar si el correo ya está registrado
-        const userExists = await registerUser(email, password, name, type);
-        if (userExists) {
+        const { statusCode, body } = await registerUser(email, password, name, type);
+        if (statusCode === 400) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({ message: 'El correo ya está registrado' }),
             };
         }
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Registro exitoso' }),
-        };
+        else if(statusCode === 201) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Registro exitoso. Verifica tu correo electrónico.' }),
+            };
+        }
+        else{
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ message: 'Error interno del servidor' }),
+            };           
+        }
     } catch (error) {
         console.error('Error en el manejador:', error);
         return {

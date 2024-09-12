@@ -1,17 +1,19 @@
-const { confirmUserEmail } = require('../utils/dynamoUtils');
+const { confirmUserEmail } = require('../utils/cognitoUtils');
 
 exports.handler = async (event) => {
     try {
-        const token = event.queryStringParameters.token;
+        // Extrae los datos del cuerpo de la solicitud
+        const { email, code } = JSON.parse(event.body);
 
-        if (!token) {
+        if (!email || !code) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ message: 'Token no proporcionado' }),
+                body: JSON.stringify({ message: 'Correo electrónico o código no proporcionados' }),
             };
         }
 
-        const result = await confirmUserEmail(token);
+        // Llama a la función para confirmar el correo electrónico
+        const result = await confirmUserEmail(email, code);
 
         if (result) {
             return {
@@ -21,10 +23,11 @@ exports.handler = async (event) => {
         } else {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ message: 'Token inválido o expirado' }),
+                body: JSON.stringify({ message: 'Código inválido o expirado' }),
             };
         }
     } catch (error) {
+        console.error('Error al confirmar correo:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: 'Error interno del servidor' }),

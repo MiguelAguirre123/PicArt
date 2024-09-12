@@ -1,4 +1,4 @@
-const { authenticateUser } = require('../utils/dynamoUtils');
+const { authenticateUser } = require('../utils/cognitoUtils');
 const { generateToken } = require('../utils/tokenUtils');
 
 exports.handler = async (event) => {

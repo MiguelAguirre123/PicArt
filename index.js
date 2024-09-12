@@ -11,7 +11,7 @@ exports.handler = async (event) => {
     try {
         if (httpMethod === 'POST' && resource === '/register') {
             return registerUser.handler(event);
-        } else if (httpMethod === 'GET' && resource === '/confirm-email') {
+        } else if (httpMethod === 'POST' && resource === '/confirm-email') {
             return confirmEmail.handler(event);
         } else if (httpMethod === 'POST' && resource === '/login') {
             return loginUser.handler(event);
